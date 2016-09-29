@@ -1,0 +1,68 @@
+// https://developers.google.com/protocol-buffers/docs/proto3
+
+syntax = "proto3";
+
+package monitor;
+
+option java_package = "com.jd.yunfan.gatherer.dto";
+option java_multiple_files = true;
+option java_outer_classname = "Monitor";
+
+message Metric {
+    string Name = 1; //唯一标记 
+    string IP = 2; //唯一标记 
+    int64 Timestamp = 3;  // 时间戳 ns
+    int32 CpuPercent = 4; // cpu百分比 *1000
+    int32 LoadAverage = 5; // load *1000
+    int32 MemPercent = 6; // 内存百分比*1000
+    int32 SwapPercent = 7; // swap使用率 *1000
+    int32 TcpEstablished = 8;
+    int32 IpReceivedPerSec = 9; // 接收ip包
+    int32 IpDiscardedPerSec = 10; // 丢弃ip包    
+    int32 TcpReceivedPerSec = 11; //tcp接收包数
+    int32 TcpSendoutPerSec = 12; //tcp发送包数
+    int32 TcpActiveOpenPerSec = 13; //  活跃的tcp连接数 
+    int32 TcpBadSegmentsPerSec = 14; //tcp包传输错误数
+
+    map<string,GatherInterfaceStats> Network = 15;    
+    map<string,GatherFsStats> FileSystem = 16;
+    
+}
+
+message GatherInterfaceStats {
+    int32 RxKBPerSec = 1;  // 网卡流入 KB/s
+    int32 RxPackets = 2;  // 网卡流入包
+    int32 RxErrorsPerSec = 3;  // 网卡流入错误 KB/s
+    int32 TxKBPerSec = 4;  // 网卡流出 KB/s
+    int32 TxPackets = 5;  // 网卡流出包
+    int32 TxErrorsPerSec = 6;  // 网卡流出错误 KB/s
+}
+
+message GatherFsStats {
+    int32 UsagePercent = 1;  // 磁盘空间使用率
+    int32 ReadCount = 2;  // 磁盘读次数
+    int32 WriteCount = 3;  // 磁盘写次数
+    int32 ReadBytesPerSec = 4;  // 磁盘读速度B/s
+    int32 WriteBytesPerSec = 5;  // 磁盘写速度B/s
+    int32 IoInProgress = 6;  // 磁盘繁忙
+}
+
+
+message Response {
+    int32 code = 1;
+    string msg = 2;
+}
+
+message MetricList {
+    repeated Metric items = 1;
+}
+
+
+service MonitorService {
+    // 发送单条
+    rpc send (monitor.Metric) returns (monitor.Response) {
+    }
+    // 发送多条
+    rpc batchSend (monitor.MetricList) returns (monitor.Response) {
+    }
+}
