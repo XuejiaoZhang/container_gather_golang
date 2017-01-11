@@ -1,6 +1,6 @@
-// Copyright 2016 JD.com. All Rights Reserved.
+// Copyright 2016 XX. All Rights Reserved.
 //
-// 20160826 version 1.0 By:zhangxuejiao
+// 20160826 version 1.0 By:xx
 
 package paas
 
